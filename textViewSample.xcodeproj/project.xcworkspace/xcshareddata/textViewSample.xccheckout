@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>2290921F-A0C7-4874-98C2-95AF7C777D30</string>
+	<key>IDESourceControlProjectName</key>
+	<string>textViewSample</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2F057DB66CD94F58C2DFE665E1E7F44057186C1C</key>
+		<string>https://github.com/ThornTechPublic/SwiftTextViewHashtag.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>textViewSample.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2F057DB66CD94F58C2DFE665E1E7F44057186C1C</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ThornTechPublic/SwiftTextViewHashtag.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>2F057DB66CD94F58C2DFE665E1E7F44057186C1C</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2F057DB66CD94F58C2DFE665E1E7F44057186C1C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>SwiftTextViewHashtag</string>
+		</dict>
+	</array>
+</dict>
+</plist>

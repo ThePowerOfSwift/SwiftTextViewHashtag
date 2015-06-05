@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     var lastTextViewHeight:CGFloat = 0.0
     
-    var messages:[String] = ["regular text, nothing to see here", "#ribl <- click on it to see an alert", "@mention not implemented yet", "regular urls are clickable http://ribl.co", "add your own text below"]
+    var messages:[String] = ["regular text, nothing to see here", "#ribl <- click on it to see an alert", "@riblapp mention tags work too", "regular urls are clickable http://ribl.co", "add your own text below"]
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var toolbarBottom: NSLayoutConstraint!
@@ -151,17 +151,28 @@ extension ViewController : UITextViewDelegate {
             textviewHeight.constant = newSize.height + 7.0
         }
     }
+    
+    func showHashTagAlert(tagType:String, payload:String){
+        let alertView = UIAlertView()
+        alertView.title = "\(tagType) tag detected"
+        // get a handle on the payload
+        alertView.message = "\(payload)"
+        alertView.addButtonWithTitle("Ok")
+        alertView.show()
+    }
  
     func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
         
         // check for our fake URL scheme hash:helloWorld
-        if URL.scheme == "hash" {
-            let alertView = UIAlertView()
-            alertView.title = "hash tag detected"
-            // get a handle on the payload
-            alertView.message = "\(URL.resourceSpecifier!)"
-            alertView.addButtonWithTitle("Ok")
-            alertView.show()
+        if let scheme = URL.scheme {
+            switch scheme {
+            case "hash" :
+                showHashTagAlert("hash", payload: URL.resourceSpecifier!)
+            case "mention" :
+                showHashTagAlert("mention", payload: URL.resourceSpecifier!)
+            default:
+                println("just a regular url")
+            }
         }
         
         return true

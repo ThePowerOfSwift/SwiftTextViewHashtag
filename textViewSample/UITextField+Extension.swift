@@ -11,6 +11,11 @@ import UIKit
 extension UITextView {
     
     func resolveHashTags(){
+
+        let schemeMap = [
+            "#":"hash",
+            "@":"mention"
+        ]
         
         // turn string in to NSString
         let nsText:NSString = self.text
@@ -28,11 +33,17 @@ extension UITextView {
         
         // tag each word if it has a hashtag
         for word in words {
+
+            var scheme:String? = nil
             
             // found a word that is prepended by a hashtag!
-            // homework for you: implement @mentions here too.
             if word.hasPrefix("#") {
-                
+                scheme = schemeMap["#"]
+            } else if word.hasPrefix("@") {
+                scheme = schemeMap["@"]
+            }
+            
+            if let scheme = scheme {
                 // a range is the character position, followed by how many characters are in the word.
                 // we need this because we staple the "href" to this range.
                 let matchRange:NSRange = nsText.rangeOfString(word as String)
@@ -52,13 +63,15 @@ extension UITextView {
                     // hashtag contains a number, like "#1"
                     // so don't make it clickable
                 } else {
+                    // trim carriage returns after the string
+                    let trimmedString = stringifiedWord.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                     // set a link for when the user clicks on this word.
                     // it's not enough to use the word "hash", but you need the url scheme syntax "hash://"
                     // note:  since it's a URL now, the color is set to the project's tint color
-                    attrString.addAttribute(NSLinkAttributeName, value: "hash:\(stringifiedWord)", range: matchRange)
+                    attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(trimmedString)", range: matchRange)
                 }
-                
             }
+            
         }
         
         // we're used to textView.text

@@ -14,10 +14,13 @@ You may want to further [customize it](https://github.com/ThornTechPublic/SwiftT
 ## Usage
 
 To detect hashtags in your textViews:
+
 1. Make sure the UITextView is not `editable`, is `selectable`, and can detect `links`
-2. Wire the UITextView to your ViewController
-3. Implement the UITextViewDelegate method `textView:shouldInteractWithURL:` to hook into the URL tap.  See [example](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/ViewController.swift#L164).
-4. After you set the text, call the `resolveHashTags()` [method](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/TextCell.swift#L17)
+1. Wire the UITextView to your ViewController
+1. Implement the UITextViewDelegate method `textView:shouldInteractWithURL:` to hook into the URL tap.  See [example](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/ViewController.swift#L164).
+1. After you set the text, call the `resolveHashTags()` [method](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/TextCell.swift#L17)
+
+![screenshot from storyboard](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/GitHubImages/UITextViewStoryboard.png)
 
 ## How it works
 

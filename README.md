@@ -9,7 +9,7 @@ This is a quick and dirty sample project implementing Hashtag detection
 
 To use this in your own app, just copy the [UITextField+Extension.swift](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/UITextField%2BExtension.swift) file into your project.
 
-You may want to further [customize it](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/UITextField%2BExtension.swift#L27) with the font of your app's textViews, as they get overridden in the process.
+You may want to further [customize this section of code](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/UITextField%2BExtension.swift#L27) with a TextView font and color that fits your app's style guide, as these get overridden in the process.
 
 ## Usage
 

@@ -5,6 +5,8 @@ Hash tag detection for TextViews in Swift
 
 This is a quick and dirty sample project implementing Hashtag detection
 
+![animated gif demo](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/GitHubImages/hashVideo.gif)
+
 ## Installation / Integration
 
 To use this in your own app, just copy the [UITextField+Extension.swift](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/UITextField%2BExtension.swift) file into your project.

@@ -5,7 +5,21 @@ Hash tag detection for TextViews in Swift
 
 This is a quick and dirty sample project implementing Hashtag detection
 
-## Hashtag detection
+## Installation / Integration
+
+To use this in your own app, just copy the [UITextField+Extension.swift](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/UITextField%2BExtension.swift) file into your project.
+
+You may want to further [customize it](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/UITextField%2BExtension.swift#L27) with the font of your app's textViews, as they get overridden in the process.
+
+## Usage
+
+To detect hashtags in your textViews:
+1. Make sure the UITextView is not `editable`, is `selectable`, and can detect `links`
+2. Wire the UITextView to your ViewController
+3. Implement the UITextViewDelegate method `textView:shouldInteractWithURL:` to hook into the URL tap.  See [example](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/ViewController.swift#L164).
+4. After you set the text, call the `resolveHashTags()` [method](https://github.com/ThornTechPublic/SwiftTextViewHashtag/blob/master/textViewSample/TextCell.swift#L17)
+
+## How it works
 
 The approach used here is to add an attribute to hashtag words, much like an "href".  
 
@@ -31,7 +45,7 @@ The overall process goes something like this:
 
 ### Clicking on hashtags
 
-Now that hashtags are URLs, they are a different color and can be clicked.  Note: there's no need to add a tap gesture to the TextView, because it's already listening for URL clicks.
+Now that hashtags are URLs, they are a different color and can be clicked.  Note: it's tempting to add a tap gesture to TextView, but you can leverage the built-in delegate instead.
 
 Intercept the URL click and check for your fake URL scheme.  
 * Set the TextView delegate.  

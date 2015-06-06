@@ -10,6 +10,14 @@ import UIKit
 
 extension UITextView {
     
+    func stripNonAlphaNumericCharacters(text:String) -> String {
+        var nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
+        
+        let characterArray = text.componentsSeparatedByCharactersInSet(nonAlphaNumericCharacters)
+        let alphaNumericString = join("", characterArray)
+        return alphaNumericString
+    }
+    
     func resolveHashTags(){
 
         let schemeMap = [
@@ -21,7 +29,8 @@ extension UITextView {
         let nsText:NSString = self.text
         
         // this needs to be an array of NSString.  String does not work.
-        let words:[NSString] = nsText.componentsSeparatedByString(" ") as! [NSString]
+        // words are separated by whitespace.  there might be a better regex way to do this though.
+        let words:[NSString] = nsText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) as! [NSString]
         
         // you can't set the font size in the storyboard anymore, since it gets overridden here.
         var attrs = [
@@ -55,6 +64,9 @@ extension UITextView {
                 // drop the hashtag
                 stringifiedWord = dropFirst(stringifiedWord)
                 
+                // strip out special characters
+                stringifiedWord = stripNonAlphaNumericCharacters(stringifiedWord)
+                
                 // check to see if the hashtag has numbers.
                 // ribl is "#1" shouldn't be considered a hashtag.
                 let digits = NSCharacterSet.decimalDigitCharacterSet()
@@ -63,12 +75,10 @@ extension UITextView {
                     // hashtag contains a number, like "#1"
                     // so don't make it clickable
                 } else {
-                    // trim carriage returns after the string
-                    let trimmedString = stringifiedWord.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                     // set a link for when the user clicks on this word.
                     // it's not enough to use the word "hash", but you need the url scheme syntax "hash://"
                     // note:  since it's a URL now, the color is set to the project's tint color
-                    attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(trimmedString)", range: matchRange)
+                    attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(stringifiedWord)", range: matchRange)
                 }
             }
             

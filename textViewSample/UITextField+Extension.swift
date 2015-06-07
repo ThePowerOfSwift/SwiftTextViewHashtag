@@ -87,6 +87,9 @@ extension UITextView {
                     // don't convert to hashtag if the entire string is numeric.
                     // example: 123abc is a hashtag
                     // example: 123 is not
+                } else if stringifiedWord.isEmpty {
+                    // do nothing.
+                    // the word was just the hashtag by itself.
                 } else {
                     // set a link for when the user clicks on this word.
                     var matchRange:NSRange = nsText.rangeOfString(stringifiedWord as String)

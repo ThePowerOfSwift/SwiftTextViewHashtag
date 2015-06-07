@@ -10,14 +10,13 @@ import UIKit
 
 extension UITextView {
     
-    func stripNonAlphaNumericCharacters(text:String) -> String {
+    func chopOffNonAlphaNumericCharacters(text:String) -> String {
         var nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
-        
         let characterArray = text.componentsSeparatedByCharactersInSet(nonAlphaNumericCharacters)
-        let alphaNumericString = join("", characterArray)
-        return alphaNumericString
+        return characterArray[0]
     }
     
+    /// Call this manually if you want to hash tagify your string.
     func resolveHashTags(){
 
         let schemeMap = [
@@ -25,69 +24,90 @@ extension UITextView {
             "@":"mention"
         ]
         
-        // turn string in to NSString
+        // Turn string in to NSString.
+        // NSString gives us some helpful API methods
         let nsText:NSString = self.text
         
-        // this needs to be an array of NSString.  String does not work.
-        // words are separated by whitespace.  there might be a better regex way to do this though.
+        // Separate the string into individual words.
+        // Whitespace is used as the word boundary.
+        // You might see word boundaries at special characters, like before a period.
+        // But we need to be careful to retain the # or @ characters.
         let words:[NSString] = nsText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) as! [NSString]
         
-        // you can't set the font size in the storyboard anymore, since it gets overridden here.
+        // Attributed text overrides anything set in the Storyboard.
+        // So remember to set your font, color, and size here.
         var attrs = [
+//            NSFontAttributeName : UIFont(name: "Georgia", size: 20.0)!,
+//            NSForegroundColorAttributeName : UIColor.greenColor(),
             NSFontAttributeName : UIFont.systemFontOfSize(17.0)
         ]
         
-        // you can staple URLs onto attributed strings
+        // Use an Attributed String to hold the text and fonts from above.
+        // We'll also append to this object some hashtag URLs for specific word ranges.
         var attrString = NSMutableAttributedString(string: nsText as String, attributes:attrs)
         
-        // tag each word if it has a hashtag
+        // Iterate over each word.
+        // So far each word will look like:
+        // - I
+        // - visited
+        // - #123abc.go!
+        // The last word is a hashtag of #123abc
+        // Use the following hashtag rules:
+        // - Include the hashtag # in the URL
+        // - Only include alphanumeric characters.  Special chars and anything after are chopped off.
+        // - Hashtags can start with numbers.  But the whole thing can't be a number (#123abc is ok, #123 is not)
         for word in words {
 
             var scheme:String? = nil
             
-            // found a word that is prepended by a hashtag!
             if word.hasPrefix("#") {
                 scheme = schemeMap["#"]
             } else if word.hasPrefix("@") {
                 scheme = schemeMap["@"]
             }
             
+            // found a word that is prepended by a hashtag
             if let scheme = scheme {
-                // a range is the character position, followed by how many characters are in the word.
-                // we need this because we staple the "href" to this range.
-                let matchRange:NSRange = nsText.rangeOfString(word as String)
                 
                 // convert the word from NSString to String
                 // this allows us to call "dropFirst" to remove the hashtag
                 var stringifiedWord:String = word as String
                 
+                // example: #123abc.go!
+                
                 // drop the hashtag
+                // example becomes: 123abc.go!
                 stringifiedWord = dropFirst(stringifiedWord)
                 
-                // strip out special characters
-                stringifiedWord = stripNonAlphaNumericCharacters(stringifiedWord)
+                // Chop off special characters and anything after them.
+                // example becomes: 123abc
+                stringifiedWord = chopOffNonAlphaNumericCharacters(stringifiedWord)
                 
-                // check to see if the hashtag has numbers.
-                // ribl is "#1" shouldn't be considered a hashtag.
-                let digits = NSCharacterSet.decimalDigitCharacterSet()
-                
-                if let numbersExist = stringifiedWord.rangeOfCharacterFromSet(digits) {
-                    // hashtag contains a number, like "#1"
-                    // so don't make it clickable
+                if let stringIsNumeric = stringifiedWord.toInt() {
+                    // don't convert to hashtag if the entire string is numeric.
+                    // example: 123abc is a hashtag
+                    // example: 123 is not
                 } else {
                     // set a link for when the user clicks on this word.
-                    // it's not enough to use the word "hash", but you need the url scheme syntax "hash://"
-                    // note:  since it's a URL now, the color is set to the project's tint color
+                    var matchRange:NSRange = nsText.rangeOfString(stringifiedWord as String)
+                    // Remember, we chopped off the hash tag, so:
+                    // 1.) shift this left by one character.  example becomes:  #123ab
+                    matchRange.location--
+                    // 2.) and lengthen the range by one character too.  example becomes:  #123abc
+                    matchRange.length++
+                    // URL syntax is http://123abc
+                    
+                    // Replace custom scheme with something like hash://123abc
+                    // URLs actually don't need the forward slashes, so it becomes hash:123abc
+                    // Custom scheme for @mentions looks like mention:123abc
+                    // As with any URL, the string will have a blue color and is clickable
                     attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(stringifiedWord)", range: matchRange)
                 }
             }
             
         }
         
-        // we're used to textView.text
-        // but here we use textView.attributedText
-        // again, this will also wipe out any fonts and colors from the storyboard,
-        // so remember to re-add them in the attrs dictionary above
+        // Use textView.attributedText instead of textView.text
         self.attributedText = attrString
     }
     

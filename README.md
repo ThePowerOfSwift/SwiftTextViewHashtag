@@ -1,8 +1,6 @@
 # SwiftTextViewHashtag
 Hash tag detection for TextViews in Swift
 
-This repo is tied to this [blog post](http://www.thorntech.com/2015/06/detecting-hashtags-mentions-and-urls-with-swift/).
-
 ## Overview
 
 This is a quick and dirty sample project implementing Hashtag detection

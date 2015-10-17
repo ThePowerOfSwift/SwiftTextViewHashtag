@@ -46,6 +46,10 @@ extension UITextView {
         // We'll also append to this object some hashtag URLs for specific word ranges.
         var attrString = NSMutableAttributedString(string: nsText as String, attributes:attrs)
         
+        // keep track of where we are as we interate through the string.
+        // otherwise, a string like "#test #test" will only highlight the first one.
+        var bookmark = 0
+        
         // Iterate over each word.
         // So far each word will look like:
         // - I
@@ -75,6 +79,9 @@ extension UITextView {
                 
                 // example: #123abc.go!
                 
+                // remember the first character, such as "#"
+                var prefix = Array(stringifiedWord)[0]
+                
                 // drop the hashtag
                 // example becomes: 123abc.go!
                 stringifiedWord = dropFirst(stringifiedWord)
@@ -91,13 +98,13 @@ extension UITextView {
                     // do nothing.
                     // the word was just the hashtag by itself.
                 } else {
-                    // set a link for when the user clicks on this word.
-                    var matchRange:NSRange = nsText.rangeOfString(stringifiedWord as String)
-                    // Remember, we chopped off the hash tag, so:
-                    // 1.) shift this left by one character.  example becomes:  #123ab
-                    matchRange.location--
-                    // 2.) and lengthen the range by one character too.  example becomes:  #123abc
-                    matchRange.length++
+                    // stick the prefix back on, but only to find the location. i.e. #123abc
+                    let prefixedWord = "\(prefix)\(stringifiedWord)"
+                    // find out where #123abc appears in the string.
+                    // only search the section of the string we haven't iterated over yet
+                    let remainingRange = NSRange(location: bookmark, length: (nsText.length - bookmark))
+                    var matchRange:NSRange = nsText.rangeOfString(prefixedWord, options: NSStringCompareOptions.LiteralSearch, range:remainingRange)
+
                     // URL syntax is http://123abc
                     
                     // Replace custom scheme with something like hash://123abc
@@ -106,7 +113,12 @@ extension UITextView {
                     // As with any URL, the string will have a blue color and is clickable
                     attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(stringifiedWord)", range: matchRange)
                 }
+                
             }
+
+            // just cycled through a word.  move the bookmark forward 
+            // by the length of the word plus a space
+            bookmark += word.length + 1
             
         }
         

@@ -162,14 +162,13 @@ extension ViewController : UITextViewDelegate {
     }
  
     func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
-        
         // check for our fake URL scheme hash:helloWorld
         if let scheme = URL.scheme {
             switch scheme {
             case "hash" :
-                showHashTagAlert("hash", payload: URL.resourceSpecifier!)
+                showHashTagAlert("hash", payload: URL.resourceSpecifier!.stringByRemovingPercentEncoding!)
             case "mention" :
-                showHashTagAlert("mention", payload: URL.resourceSpecifier!)
+                showHashTagAlert("mention", payload: URL.resourceSpecifier!.stringByRemovingPercentEncoding!)
             default:
                 println("just a regular url")
             }

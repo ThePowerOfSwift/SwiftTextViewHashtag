@@ -111,7 +111,9 @@ extension UITextView {
                     // URLs actually don't need the forward slashes, so it becomes hash:123abc
                     // Custom scheme for @mentions looks like mention:123abc
                     // As with any URL, the string will have a blue color and is clickable
-                    attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(stringifiedWord)", range: matchRange)
+                    if let escapedString = stringifiedWord.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet()) {
+                        attrString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(escapedString)", range: matchRange)
+                    }
                 }
                 
             }

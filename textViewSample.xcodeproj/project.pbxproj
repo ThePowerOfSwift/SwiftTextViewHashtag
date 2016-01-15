@@ -162,6 +162,8 @@
 		FC6AF27C1AFD59A7003BAE37 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0720;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Thorn Technologies";
 				TargetAttributes = {

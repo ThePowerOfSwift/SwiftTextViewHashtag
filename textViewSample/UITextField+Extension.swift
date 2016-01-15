@@ -11,7 +11,7 @@ import UIKit
 extension UITextView {
     
     func chopOffNonAlphaNumericCharacters(text:String) -> String {
-        var nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
+        let nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
         let characterArray = text.componentsSeparatedByCharactersInSet(nonAlphaNumericCharacters)
         return characterArray[0]
     }
@@ -32,11 +32,11 @@ extension UITextView {
         // Whitespace is used as the word boundary.
         // You might see word boundaries at special characters, like before a period.
         // But we need to be careful to retain the # or @ characters.
-        let words:[NSString] = nsText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) as! [NSString]
+        let words:[NSString] = nsText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         // Attributed text overrides anything set in the Storyboard.
         // So remember to set your font, color, and size here.
-        var attrs = [
+        let attrs = [
 //            NSFontAttributeName : UIFont(name: "Georgia", size: 20.0)!,
 //            NSForegroundColorAttributeName : UIColor.greenColor(),
             NSFontAttributeName : UIFont.systemFontOfSize(17.0)
@@ -44,7 +44,7 @@ extension UITextView {
         
         // Use an Attributed String to hold the text and fonts from above.
         // We'll also append to this object some hashtag URLs for specific word ranges.
-        var attrString = NSMutableAttributedString(string: nsText as String, attributes:attrs)
+        let attrString = NSMutableAttributedString(string: nsText as String, attributes:attrs)
         
         // keep track of where we are as we interate through the string.
         // otherwise, a string like "#test #test" will only highlight the first one.
@@ -80,17 +80,17 @@ extension UITextView {
                 // example: #123abc.go!
                 
                 // remember the first character, such as "#"
-                var prefix = Array(stringifiedWord)[0]
+                let prefix = Array(stringifiedWord.characters)[0]
                 
                 // drop the hashtag
                 // example becomes: 123abc.go!
-                stringifiedWord = dropFirst(stringifiedWord)
+                stringifiedWord = String(stringifiedWord.characters.dropFirst())
                 
                 // Chop off special characters and anything after them.
                 // example becomes: 123abc
                 stringifiedWord = chopOffNonAlphaNumericCharacters(stringifiedWord)
                 
-                if let stringIsNumeric = stringifiedWord.toInt() {
+                if let _ = Int(stringifiedWord) {
                     // don't convert to hashtag if the entire string is numeric.
                     // example: 123abc is a hashtag
                     // example: 123 is not
@@ -103,7 +103,7 @@ extension UITextView {
                     // find out where #123abc appears in the string.
                     // only search the section of the string we haven't iterated over yet
                     let remainingRange = NSRange(location: bookmark, length: (nsText.length - bookmark))
-                    var matchRange:NSRange = nsText.rangeOfString(prefixedWord, options: NSStringCompareOptions.LiteralSearch, range:remainingRange)
+                    let matchRange:NSRange = nsText.rangeOfString(prefixedWord, options: NSStringCompareOptions.LiteralSearch, range:remainingRange)
 
                     // URL syntax is http://123abc
                     

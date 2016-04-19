@@ -8,24 +8,21 @@
 
 import UIKit
 
+func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) {
+    for (k, v) in right {
+        left.updateValue(v, forKey: k)
+    }
+}
+
 extension UITextView {
     
-    func chopOffNonAlphaNumericCharacters(text:String) -> String {
-        let nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
-        let characterArray = text.componentsSeparatedByCharactersInSet(nonAlphaNumericCharacters)
-        return characterArray[0]
-    }
-    
-    /// Call this manually if you want to hash tagify your string.
-    func resolveHashTags(){
+    public func resolveHashTags(){
 
         let schemeMap = [
             "#":"hash",
             "@":"mention"
         ]
-        
-        // Turn string in to NSString.
-        // NSString gives us some helpful API methods
+
         let nsText:NSString = self.text
         
         // Separate the string into individual words.
@@ -34,17 +31,19 @@ extension UITextView {
         // But we need to be careful to retain the # or @ characters.
         let words:[NSString] = nsText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
-        // Attributed text overrides anything set in the Storyboard.
-        // So remember to set your font, color, and size here.
-        let attrs = [
-//            NSFontAttributeName : UIFont(name: "Georgia", size: 20.0)!,
-//            NSForegroundColorAttributeName : UIColor.greenColor(),
-            NSFontAttributeName : UIFont.systemFontOfSize(17.0)
-        ]
+        
+        
+        let fullRange = NSRange(location: 0, length: attributedText.length)
+        var attributes = [String:AnyObject]()
+            
+        attributedText.enumerateAttributesInRange(fullRange, options: NSAttributedStringEnumerationOptions(rawValue: 0)) { (existingAttributes:[String : AnyObject], range:NSRange, ptr:UnsafeMutablePointer<ObjCBool>) in
+            
+            attributes += existingAttributes
+        }
         
         // Use an Attributed String to hold the text and fonts from above.
         // We'll also append to this object some hashtag URLs for specific word ranges.
-        let attrString = NSMutableAttributedString(string: nsText as String, attributes:attrs)
+        let attrString = NSMutableAttributedString(string: nsText as String, attributes:attributes)
         
         // keep track of where we are as we interate through the string.
         // otherwise, a string like "#test #test" will only highlight the first one.
@@ -128,4 +127,9 @@ extension UITextView {
         self.attributedText = attrString
     }
     
+    private func chopOffNonAlphaNumericCharacters(text:String) -> String {
+        let nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
+        let characterArray = text.componentsSeparatedByCharactersInSet(nonAlphaNumericCharacters)
+        return characterArray[0]
+    }
 }

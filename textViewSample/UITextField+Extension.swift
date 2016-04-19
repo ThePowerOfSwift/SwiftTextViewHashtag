@@ -17,12 +17,12 @@ func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right:
 extension UITextView {
     
     public func resolveHashTags() {
-
+        
         let schemeMap = [
             "#":"hash",
             "@":"mention"
         ]
-
+        
         let nsText:NSString = self.text
         
         // Separate the string into individual words.
@@ -35,7 +35,7 @@ extension UITextView {
         
         let fullRange = NSRange(location: 0, length: attributedText.length)
         var attributes = [String:AnyObject]()
-            
+        
         attributedText.enumerateAttributesInRange(fullRange, options: NSAttributedStringEnumerationOptions(rawValue: 0)) { (existingAttributes:[String : AnyObject], range:NSRange, ptr:UnsafeMutablePointer<ObjCBool>) in
             attributes += existingAttributes
         }
@@ -59,7 +59,7 @@ extension UITextView {
         // - Only include alphanumeric characters.  Special chars and anything after are chopped off.
         // - Hashtags can start with numbers.  But the whole thing can't be a number (#123abc is ok, #123 is not)
         for word in words {
-
+            
             var scheme:String? = nil
             
             if word.hasPrefix("#") {
@@ -102,7 +102,7 @@ extension UITextView {
                     // only search the section of the string we haven't iterated over yet
                     let remainingRange = NSRange(location: bookmark, length: (nsText.length - bookmark))
                     let matchRange:NSRange = nsText.rangeOfString(prefixedWord, options: NSStringCompareOptions.LiteralSearch, range:remainingRange)
-
+                    
                     // URL syntax is http://123abc
                     
                     // Replace custom scheme with something like hash://123abc
@@ -115,8 +115,8 @@ extension UITextView {
                 }
                 
             }
-
-            // just cycled through a word.  move the bookmark forward 
+            
+            // just cycled through a word.  move the bookmark forward
             // by the length of the word plus a space
             bookmark += word.length + 1
             

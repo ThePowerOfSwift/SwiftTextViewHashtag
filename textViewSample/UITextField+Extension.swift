@@ -16,7 +16,7 @@ func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right:
 
 extension UITextView {
     
-    public func resolveHashTags(){
+    public func resolveHashTags() {
 
         let schemeMap = [
             "#":"hash",
@@ -37,7 +37,6 @@ extension UITextView {
         var attributes = [String:AnyObject]()
             
         attributedText.enumerateAttributesInRange(fullRange, options: NSAttributedStringEnumerationOptions(rawValue: 0)) { (existingAttributes:[String : AnyObject], range:NSRange, ptr:UnsafeMutablePointer<ObjCBool>) in
-            
             attributes += existingAttributes
         }
         

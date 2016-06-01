@@ -78,7 +78,7 @@ extension UITextView {
             wordWithTagRemoved.dropTrailingNonAlphaNumericCharacters()
             
             // Make sure we still have a valid word (i.e. not just '#' or '@' by itself, not #100)
-            guard scheme != nil && Int(wordWithTagRemoved) == nil && !wordWithTagRemoved.isEmpty
+            guard let schemeMatch = scheme where Int(wordWithTagRemoved) == nil && !wordWithTagRemoved.isEmpty
                 else { continue }
             
             let remainingRange = Range(bookmark..<text.endIndex)
@@ -92,7 +92,7 @@ extension UITextView {
             
             if let matchRange = text.rangeOfString(word, options: .LiteralSearch, range:remainingRange),
                 let escapedString = wordWithTagRemoved.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet()) {
-                attributedString.addAttribute(NSLinkAttributeName, value: "\(scheme):\(escapedString)", range: text.NSRangeFromRange(matchRange))
+                attributedString.addAttribute(NSLinkAttributeName, value: "\(schemeMatch):\(escapedString)", range: text.NSRangeFromRange(matchRange))
             }
             
             // just cycled through a word. Move the bookmark forward by the length of the word plus a space

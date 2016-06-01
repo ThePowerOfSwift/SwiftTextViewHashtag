@@ -96,7 +96,7 @@ extension UITextView {
             }
             
             // just cycled through a word. Move the bookmark forward by the length of the word plus a space
-            bookmark = bookmark.advancedBy(word.characters.count + 1)
+            bookmark = bookmark.advancedBy(word.characters.count)
         }
         
         self.attributedText = attributedString

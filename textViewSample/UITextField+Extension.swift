@@ -8,7 +8,7 @@
 
 import UIKit
 
-func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) {
+func += <KeyType, ValueType> ( left: inout Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) {
     for (k, v) in right {
         left.updateValue(v, forKey: k)
     }
@@ -17,14 +17,15 @@ func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right:
 extension String {
     func NSRangeFromRange(range: Range<String.Index>) -> NSRange {
         let utf16view = self.utf16
-        let from = String.UTF16View.Index(range.startIndex, within: utf16view)
-        let to = String.UTF16View.Index(range.endIndex, within: utf16view)
-        return NSMakeRange(utf16view.startIndex.distanceTo(from), from.distanceTo(to))
+        let from = String.UTF16View.Index(range.lowerBound, within: utf16view)
+        let to = String.UTF16View.Index(range.upperBound, within: utf16view)
+        return NSMakeRange(utf16view.distance(from: utf16view.startIndex, to: from),
+                           utf16view.distance(from: from, to: to))
     }
     
     mutating func dropTrailingNonAlphaNumericCharacters() {
-        let nonAlphaNumericCharacters = NSCharacterSet.alphanumericCharacterSet().invertedSet
-        let characterArray = componentsSeparatedByCharactersInSet(nonAlphaNumericCharacters)
+        let nonAlphaNumericCharacters = NSCharacterSet.alphanumerics.inverted
+        let characterArray = components(separatedBy: nonAlphaNumericCharacters)
         if let first = characterArray.first {
             self = first
         }
@@ -44,7 +45,7 @@ extension UITextView {
         // Whitespace is used as the word boundary.
         // You might see word boundaries at special characters, like before a period.
         // But we need to be careful to retain the # or @ characters.
-        let words = self.text.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let words = self.text.components(separatedBy: NSCharacterSet.whitespacesAndNewlines)
         let attributedString = attributedText.mutableCopy() as! NSMutableAttributedString
         
         // keep track of where we are as we interate through the string.
@@ -78,7 +79,7 @@ extension UITextView {
             wordWithTagRemoved.dropTrailingNonAlphaNumericCharacters()
             
             // Make sure we still have a valid word (i.e. not just '#' or '@' by itself, not #100)
-            guard let schemeMatch = scheme where Int(wordWithTagRemoved) == nil && !wordWithTagRemoved.isEmpty
+            guard let schemeMatch = scheme, Int(wordWithTagRemoved) == nil && !wordWithTagRemoved.isEmpty
                 else { continue }
             
             let remainingRange = Range(bookmark..<text.endIndex)
@@ -90,13 +91,13 @@ extension UITextView {
             // Custom scheme for @mentions looks like mention:123abc
             // As with any URL, the string will have a blue color and is clickable
             
-            if let matchRange = text.rangeOfString(word, options: .LiteralSearch, range:remainingRange),
-                let escapedString = wordWithTagRemoved.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet()) {
-                attributedString.addAttribute(NSLinkAttributeName, value: "\(schemeMatch):\(escapedString)", range: text.NSRangeFromRange(matchRange))
+            if let matchRange = text.range(of: word, options: .literal, range: remainingRange),
+                let escapedString = wordWithTagRemoved.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                attributedString.addAttribute(NSLinkAttributeName, value: "\(schemeMatch):\(escapedString)", range: text.NSRangeFromRange(range: matchRange))
             }
             
             // just cycled through a word. Move the bookmark forward by the length of the word plus a space
-            bookmark = bookmark.advancedBy(word.characters.count)
+            bookmark = text.index(bookmark, offsetBy: word.characters.count)
         }
         
         self.attributedText = attributedString
